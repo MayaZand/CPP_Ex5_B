@@ -1,3 +1,4 @@
+/* BLALALALALLALALALALALALALALLALALAL */
 #include <iostream>
 #include <vector>
 #include <cmath>
@@ -11,7 +12,6 @@ namespace ariel
     {
     private:
         vector<int> elements;
-        vector<int*> elementsAscend;
         vector<int*> elementsSideCross;
         vector<int*> elementsPrime;
 

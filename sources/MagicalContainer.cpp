@@ -7,22 +7,90 @@ void MagicalContainer::addElement(int newElement)
 {
 	auto it = std::find(elements.begin(), elements.end(), newElement);
 
-	if (it == elements.end())
+	if (it != elements.end())
 		return;
-	
-	elements.push_back(newElement);
+
+	auto to_insert = std::upper_bound(elements.begin(), elements.end(), newElement, [](int a, int b)
+									  { return a < b; });
+	elements.insert(to_insert, newElement);
+
+	elementsPrime.clear();
+	elementsSideCross.clear();
+	elementsPrime.reserve(elements.size());
+	elementsSideCross.reserve(elements.size());
+
+	for (int &elem : elements)
+	{
+		if (isPrime(elem))
+			elementsPrime.push_back(&elem);
+	}
+
+	if (size() == 1)
+	{
+		int &ret = elements.back();
+		elementsSideCross.push_back(&ret);
+		return;
+	}
+
+	size_t start = 0, end = size() - 1;
+	while (start <= end && end != 0)
+	{
+		int &ret = elements.at(start);
+		elementsSideCross.push_back(&ret);
+
+		if (start != end)
+		{
+			int &ret2 = elements.at(end);
+			elementsSideCross.push_back(&ret2);
+		}
+
+		start++;
+		end--;
+	}
 }
 
-void MagicalContainer::removeElement(int index)
+void MagicalContainer::removeElement(int newElement)
 {
-	// if (index < 0 || index >= this->elements.size())
-	// {
-	//     throw invalid_argument ("Invalid index!");
+	auto it = std::find(elements.begin(), elements.end(), newElement);
 
-	//     return;
-	// }
+	if (it == elements.end())
+		throw runtime_error("Element not found kkkk");
 
-	// elements.erase(elements.begin() + index);
+	int *ptr = &(*it);
+
+	elements.erase(it);
+
+	if (isPrime(newElement))
+	{
+		auto it2 = std::find(elementsPrime.begin(), elementsPrime.end(), ptr);
+		elementsPrime.erase(it2);
+	}
+
+	if (size() == 0)
+		return;
+
+	else if (size() == 1)
+	{
+		int &ret = elements.back();
+		elementsSideCross.push_back(&ret);
+		return;
+	}
+
+	size_t start = 0, end = size() - 1;
+	while (start <= end && end != 0)
+	{
+		int &ret = elements.at(start);
+		elementsSideCross.push_back(&ret);
+
+		if (start != end)
+		{
+			int &ret2 = elements.at(end);
+			elementsSideCross.push_back(&ret2);
+		}
+
+		start++;
+		end--;
+	}
 }
 
 size_t MagicalContainer::size() const
@@ -35,7 +103,7 @@ vector<int> &MagicalContainer::getElements()
 	return this->elements;
 }
 
-bool isPrime(int num)
+bool MagicalContainer::isPrime(int num)
 {
 	if (num < 2)
 	{
@@ -107,17 +175,17 @@ bool MagicalContainer::AscendingIterator::operator<(const Iterator &other) const
 
 int MagicalContainer::AscendingIterator::operator*() const
 {
-	if (index == container.elementsAscend.size())
+	if (index == container.elements.size())
 		throw runtime_error("Out of range");
-	
-	return *(container.elementsAscend.at(index));
+
+	return container.elements.at(index);
 }
 
 MagicalContainer::AscendingIterator &MagicalContainer::AscendingIterator::operator++()
 {
-	if (index == container.elementsAscend.size())
+	if (index == container.elements.size())
 		throw runtime_error("Out of range");
-	 
+
 	++index;
 	return *this;
 }
@@ -129,17 +197,19 @@ MagicalContainer::AscendingIterator MagicalContainer::AscendingIterator::begin()
 
 MagicalContainer::AscendingIterator MagicalContainer::AscendingIterator::end() const
 {
-	return AscendingIterator(container, container.elementsAscend.size());
+	return AscendingIterator(container, container.elements.size());
 }
 
-bool MagicalContainer::AscendingIterator::operator==(const AscendingIterator &other) const {
+bool MagicalContainer::AscendingIterator::operator==(const AscendingIterator &other) const
+{
 	if (&container != &(other.container))
 		throw runtime_error("Containers are not the same!");
 
 	return this->index == other.index;
 }
 
-bool MagicalContainer::AscendingIterator::operator!=(const AscendingIterator &other) const {
+bool MagicalContainer::AscendingIterator::operator!=(const AscendingIterator &other) const
+{
 	return !(*this == other);
 }
 
@@ -197,7 +267,7 @@ int MagicalContainer::SideCrossIterator::operator*() const
 {
 	if (index == container.elementsSideCross.size())
 		throw runtime_error("Out of range");
-	
+
 	return *(container.elementsSideCross.at(index));
 }
 
@@ -205,7 +275,7 @@ MagicalContainer::SideCrossIterator &MagicalContainer::SideCrossIterator::operat
 {
 	if (index == container.elementsSideCross.size())
 		throw runtime_error("Out of range");
-	 
+
 	++index;
 	return *this;
 }
@@ -220,14 +290,16 @@ MagicalContainer::SideCrossIterator MagicalContainer::SideCrossIterator::end() c
 	return SideCrossIterator(container, container.elementsSideCross.size());
 }
 
-bool MagicalContainer::SideCrossIterator::operator==(const SideCrossIterator &other) const {
+bool MagicalContainer::SideCrossIterator::operator==(const SideCrossIterator &other) const
+{
 	if (&container != &(other.container))
 		throw runtime_error("Containers are not the same!");
 
 	return this->index == other.index;
 }
 
-bool MagicalContainer::SideCrossIterator::operator!=(const SideCrossIterator &other) const {
+bool MagicalContainer::SideCrossIterator::operator!=(const SideCrossIterator &other) const
+{
 	return !(*this == other);
 }
 
@@ -285,7 +357,7 @@ int MagicalContainer::PrimeIterator::operator*() const
 {
 	if (index == container.elementsPrime.size())
 		throw runtime_error("Out of range");
-	
+
 	return *(container.elementsPrime.at(index));
 }
 
@@ -293,7 +365,7 @@ MagicalContainer::PrimeIterator &MagicalContainer::PrimeIterator::operator++()
 {
 	if (index == container.elementsPrime.size())
 		throw runtime_error("Out of range");
-	 
+
 	++index;
 	return *this;
 }
@@ -308,13 +380,15 @@ MagicalContainer::PrimeIterator MagicalContainer::PrimeIterator::end() const
 	return PrimeIterator(container, container.elementsPrime.size());
 }
 
-bool MagicalContainer::PrimeIterator::operator==(const PrimeIterator &other) const {
+bool MagicalContainer::PrimeIterator::operator==(const PrimeIterator &other) const
+{
 	if (&container != &(other.container))
 		throw runtime_error("Containers are not the same!");
 
 	return this->index == other.index;
 }
 
-bool MagicalContainer::PrimeIterator::operator!=(const PrimeIterator &other) const {
+bool MagicalContainer::PrimeIterator::operator!=(const PrimeIterator &other) const
+{
 	return !(*this == other);
 }
