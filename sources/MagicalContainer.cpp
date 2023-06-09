@@ -5,13 +5,14 @@ using namespace ariel;
 
 void MagicalContainer::addElement(int newElement)
 {
-	auto it = std::find(elements.begin(), elements.end(), newElement);
+	auto it = find(elements.begin(), elements.end(), newElement);
 
 	if (it != elements.end())
+	{	
 		return;
+	}
 
-	auto to_insert = std::upper_bound(elements.begin(), elements.end(), newElement, [](int a, int b)
-									  { return a < b; });
+	auto to_insert = upper_bound(elements.begin(), elements.end(), newElement, [](int a, int b){ return a < b; });
 	elements.insert(to_insert, newElement);
 
 	elementsPrime.clear();
@@ -19,16 +20,19 @@ void MagicalContainer::addElement(int newElement)
 	elementsPrime.reserve(elements.size());
 	elementsSideCross.reserve(elements.size());
 
-	for (int &elem : elements)
+	for (int& elem : elements)
 	{
 		if (isPrime(elem))
+		{
 			elementsPrime.push_back(&elem);
+		}
 	}
 
 	if (size() == 1)
 	{
 		int &ret = elements.back();
 		elementsSideCross.push_back(&ret);
+		
 		return;
 	}
 
@@ -51,23 +55,27 @@ void MagicalContainer::addElement(int newElement)
 
 void MagicalContainer::removeElement(int newElement)
 {
-	auto it = std::find(elements.begin(), elements.end(), newElement);
+	auto it = find(elements.begin(), elements.end(), newElement);
 
 	if (it == elements.end())
+	{
 		throw runtime_error("Element not found kkkk");
+	}
 
-	int *ptr = &(*it);
+	int* ptr = &(*it);
 
 	elements.erase(it);
 
 	if (isPrime(newElement))
 	{
-		auto it2 = std::find(elementsPrime.begin(), elementsPrime.end(), ptr);
+		auto it2 = find(elementsPrime.begin(), elementsPrime.end(), ptr);
 		elementsPrime.erase(it2);
 	}
 
 	if (size() == 0)
+	{
 		return;
+	}
 
 	else if (size() == 1)
 	{
@@ -79,7 +87,7 @@ void MagicalContainer::removeElement(int newElement)
 	size_t start = 0, end = size() - 1;
 	while (start <= end && end != 0)
 	{
-		int &ret = elements.at(start);
+		int& ret = elements.at(start);
 		elementsSideCross.push_back(&ret);
 
 		if (start != end)
@@ -124,6 +132,7 @@ bool MagicalContainer::isPrime(int num)
 /********************** Iterators implementation area **********************/
 
 /********************** AscendingIterator **********************/
+
 MagicalContainer::AscendingIterator &MagicalContainer::AscendingIterator::operator=(const AscendingIterator &other)
 {
 	if (this != &other)
@@ -227,9 +236,9 @@ MagicalContainer::SideCrossIterator &MagicalContainer::SideCrossIterator::operat
 	return *this;
 }
 
-bool MagicalContainer::SideCrossIterator::operator==(const Iterator &other) const
+bool MagicalContainer::SideCrossIterator::operator==(const Iterator& other) const
 {
-	const SideCrossIterator *ptr = dynamic_cast<const SideCrossIterator *>(&other);
+	const SideCrossIterator* ptr = dynamic_cast<const SideCrossIterator *>(&other);
 
 	if (ptr == nullptr)
 		throw runtime_error("Not the same type!");
@@ -247,7 +256,7 @@ bool MagicalContainer::SideCrossIterator::operator!=(const Iterator &other) cons
 
 bool MagicalContainer::SideCrossIterator::operator>(const Iterator &other) const
 {
-	const SideCrossIterator *ptr = dynamic_cast<const SideCrossIterator *>(&other);
+	const SideCrossIterator* ptr = dynamic_cast<const SideCrossIterator *>(&other);
 
 	if (ptr == nullptr)
 		throw runtime_error("Not the same type!");

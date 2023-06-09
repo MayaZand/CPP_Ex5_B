@@ -1,4 +1,4 @@
-/* BLALALALALLALALALALALALALALLALALAL */
+/* during the preparation of this assignment i got help from Roy Simanovich & chat GPT*/
 #include <iostream>
 #include <vector>
 #include <cmath>
@@ -61,10 +61,12 @@ namespace ariel
 
         public:
             /* constructors & destructor: */
-            AscendingIterator(MagicalContainer& container, size_t index): container(container), index(index){}
-            AscendingIterator(MagicalContainer& container): container(container), index(0){};
-            AscendingIterator(AscendingIterator& other): container(other.container), index(other.index){};
-            ~AscendingIterator() override = default;
+            AscendingIterator(MagicalContainer& container, size_t index): container(container), index(index){} // main constructor
+            AscendingIterator(MagicalContainer& container): container(container), index(0){}; //default constructor
+            AscendingIterator(AscendingIterator& other): container(other.container), index(other.index){}; // deep copy constructor
+            ~AscendingIterator() override = default; // default destructor
+
+
 
             /* METHODS: */
             AscendingIterator& operator=(const AscendingIterator& other);
@@ -102,10 +104,10 @@ namespace ariel
         public:
             
             /* constructors & destructor: */
-            SideCrossIterator(MagicalContainer& container, size_t index): container(container), index(index){}
-            SideCrossIterator(MagicalContainer& container): container(container), index(0){};
-            SideCrossIterator(SideCrossIterator& other): container(other.container), index(other.index){};
-            ~SideCrossIterator() override = default;
+            SideCrossIterator(MagicalContainer& container, size_t index): container(container), index(index){} // main constructor
+            SideCrossIterator(MagicalContainer& container): container(container), index(0){}; //default constructor
+            SideCrossIterator(SideCrossIterator& other): container(other.container), index(other.index){}; // deep copy constructor
+            ~SideCrossIterator() override = default; // default destructor
 
             /* METHODS: */
             SideCrossIterator& operator=(const SideCrossIterator &other);
@@ -143,10 +145,10 @@ namespace ariel
 
             /* constructor & destructor: */
 
-            PrimeIterator(MagicalContainer& container, size_t index): container(container), index(index){}
-            PrimeIterator(MagicalContainer& container): container(container), index(0){};
-            PrimeIterator(PrimeIterator& other): container(other.container), index(other.index){};
-            ~PrimeIterator() override = default;
+            PrimeIterator(MagicalContainer& container, size_t index): container(container), index(index){} // main constructor
+            PrimeIterator(MagicalContainer& container): container(container), index(0){}; // default constructor
+            PrimeIterator(PrimeIterator& other): container(other.container), index(other.index){}; // deep copy constructor
+            ~PrimeIterator() override = default; // default destructor
             
             /* METHODS: */
             PrimeIterator &operator=(const PrimeIterator &other);
